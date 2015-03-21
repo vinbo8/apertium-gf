@@ -34,14 +34,16 @@ initStream p l orig s
 
 buildStream :: PGF -> Language -> [(Lemma, Analysis)] -> String -> String
 buildStream _ _ [] _ = "$ "
-buildStream p ln ((l, a):xs) s
-    | isValid p ln s l = "/" ++ show l ++ buildTags (words a) ++ buildStream p ln xs s
-    | otherwise = buildStream p ln xs s
+--buildStream p ln ((l, a):xs) s
+--    | isValid p ln s l = "/" ++ show l ++ buildTags (words a) ++ buildStream p ln xs s
+--    | otherwise = buildStream p ln xs s
+--    where t = startCat p
+buildStream p ln ((l, a):xs) s = "/" ++ show l ++ buildTags (words a) ++ buildStream p ln xs s
     where t = startCat p
 
-isValid :: PGF -> Language -> String -> Lemma -> Bool
-isValid p ln s l = isInfixOf (show l) . show $ (parse p ln t s)
-    where t = startCat p
+--isValid :: PGF -> Language -> String -> Lemma -> Bool
+--isValid p ln s l = isInfixOf (show l) . show $ (parse p ln t s)
+--    where t = startCat p
 
 buildTags :: [String] -> String
 buildTags [] = ""
