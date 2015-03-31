@@ -59,3 +59,4 @@ buildTags (x:xs) = "<" ++ x ++ ">" ++ buildTags xs
 
 parseString :: PGF -> Language -> String -> String
 parseString p l s = foldl (\acc x -> acc ++ x) "" (map (initStream p l (getWord False s)) (parseSentence s))
+
