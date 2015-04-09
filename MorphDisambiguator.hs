@@ -50,7 +50,7 @@ buildStream p ln ((l, a):xs) s
     where t = startCat p
 
 isValid :: PGF -> Language -> String -> Lemma -> Bool
-isValid p ln s l = isInfixOf (show l) . show $ (parse p ln t s)
+isValid p ln s l = isInfixOf (show l) . show $ (head $ filter (\x -> not $ isInfixOf "LStr" (show x)) (parse p ln t s))
     where t = startCat p
 
 buildTags :: [String] -> String
