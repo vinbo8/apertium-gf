@@ -24,17 +24,20 @@ def partition_stream(stream):
 def tag_substitute(d, old, new):
     for i in d:
         for n, j in enumerate(d[i]):
-            if j['lemma'][1] == old:
+			if j['lemma'][1] == old or (callable(old) and old(j['lemma'][1]) == True):
                 take = j['lemma'][1]
                 d[i][n]['lemma'] = d[i][n]['lemma'][0]
-                d[i][n]['analyses'].append(take)
+				if new != "!":
+	                d[i][n]['analyses'].append(take)
                 
     for i in d:
         for n, j in enumerate(d[i]):
             for m, k in enumerate(j['analyses']):
-                if k == old:
-                    print k
-                    d[i][n]['analyses'][m] = new
+                if k == old or (callable(old) and old(k) == True):
+					if new == "!":
+						del(d[i][n]['analyses'][m])
+					else:
+	                    d[i][n]['analyses'][m] = new
     return d
 
 def expand_stream(d):
@@ -52,7 +55,7 @@ def expand_stream(d):
 
 # TODO: fill this up
 gf_ap = {
-    "s": "!",
+	lambda x: x.lower() == x : "!",
     "V2": "vblex",
     "Masc": "m",
     "VPart": "pp",
