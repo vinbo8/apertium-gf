@@ -13,6 +13,15 @@ def split(arr, s):
     n = int(len(arr) * s)
     return arr[:n], arr[n:]
 
+def get_tags(g):
+    out = []
+    for i in ap_tags:
+        featuresets = [(tag_features(gf), "yes" if i in ap else "no") for (ap, gf) in final_flat]
+        classifier = nltk.NaiveBayesClassifier.train(featuresets)
+        if classifier.classify(tag_features(g)) == "yes":
+            out.append(i)
+    return out
+
 for i in ap_tags:
     out = {}
     tot_acc = 0
@@ -47,6 +56,20 @@ for i in ap_tags:
 for i in out:
     tags = sorted(out[i], key=lambda x: x[1], reverse=True)
     print i, tags
+
+# reduce tags
+final = {}
+for i in out:
+    tags = map(lambda x: x[0], sorted(out[i], key=lambda x: x[1], reverse=True))
+    print "ORIG: %s" % tags,
+
+    for j in itertools.combinations(tags, 2):
+        if j in banned:
+            try:
+                tags.remove(j[1])
+            except:
+                pass
+    print "\tNEW: %s\n" % tags
     
 """
        acr =>    0 => 1.000
