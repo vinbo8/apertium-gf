@@ -28,6 +28,26 @@ for i in ap_tags:
     print "%10s => %4s => %s" % (i, len(filter(lambda x: x[1] == "yes", featuresets)), format(tot_acc, '.3f'))
     out[i] = tot_acc
 
+# multilabel classifier
+out = {}
+first, second = split(final_flat, 0.8)
+
+for i in ap_tags:
+    train = [(tag_features(gf), "yes" if i in ap else "no") for (ap, gf) in first]
+    classifier = nltk.NaiveBayesClassifier.train(train)
+
+    for x, j in enumerate(second):
+        if classifier.classify(tag_features(j[1])) == "yes":
+            try:
+                out[str(j[1])].append((i, classifier.prob_classify(tag_features(j[1])).prob('yes')))
+                out[str(j[1])] = list(set(out[str(j[1])]))
+            except:
+                out[str(j[1])] = [(i, classifier.prob_classify(tag_features(j[1])).prob('yes'))]
+
+for i in out:
+    tags = sorted(out[i], key=lambda x: x[1], reverse=True)
+    print i, tags
+    
 """
        acr =>    0 => 1.000
     predet =>  136 => 0.788
